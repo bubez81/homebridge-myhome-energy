@@ -1,3 +1,8 @@
+# 1.1.18
+
+- Pubblica la selezione legacy NODE come TREE per limitare il generale al proprio endpoint. Mantiene i sottomisuratori SET e la correzione cache 1.1.17.
+- Verifica mirata per tessere Casa che ripetono il generale: risultato Apple da confermare sul campo, nessuna promessa sul doppio conteggio.
+
 # Changelog
 
 ## 1.1.17

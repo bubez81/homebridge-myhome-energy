@@ -1,3 +1,12 @@
+## Nota 1.1.18: generale limitato al proprio endpoint
+
+La selezione salvata `node` viene ora pubblicata come TREE, mantenendo UUID,
+endpoint e abbinamenti. Gli otto sottomisuratori SET restano invariati.
+La modifica serve a verificare il caso in cui Casa ripete il valore del generale
+sulle tessere delle singole prese, mentre Homebridge mostra valori distinti.
+L’effetto su Casa richiede verifica reale; non risolve il doppio conteggio.
+Le descrizioni NODE nelle sezioni storiche sotto descrivono la prova precedente.
+
 # 🏠 MyHome Eve Power Meter
 
 [![npm version](https://img.shields.io/npm/v/homebridge-myhome-eve.svg)](https://www.npmjs.com/package/homebridge-myhome-eve)

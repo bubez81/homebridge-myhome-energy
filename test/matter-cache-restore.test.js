@@ -73,7 +73,7 @@ test('unmodified Homebridge: real cache restore, nine meters, three restarts and
                 numbers = currentNumbers;
                 for (const [i, a] of entries.entries()) {
                     const s = a.endpoint.state;
-                    assert.equal(s.powerTopology.featureMap[enabled ? i ? 'setTopology' : 'nodeTopology' : 'treeTopology'], true);
+                    assert.equal(s.powerTopology.featureMap[enabled ? i ? 'setTopology' : 'treeTopology' : 'treeTopology'], true);
                     if (enabled && i) assert.deepEqual([...s.powerTopology.availableEndpoints], [a.endpoint.number]);
                     assert.equal(Number(s.electricalPowerMeasurement.activePower), 123000);
                     assert.equal(Number(s.electricalEnergyMeasurement.cumulativeEnergyImported.energy), 4560000);

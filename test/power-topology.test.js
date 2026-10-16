@@ -6,7 +6,7 @@ const { join } = require('node:path');
 const { pathToFileURL } = require('node:url');
 const { applyPowerTopologyExperiment } = require('../lib/power-topology-experiment');
 
-test('real Homebridge/Matter: NODE, SET self-reference, all submeters, restart and rollback', {
+test('real Homebridge/Matter: legacy NODE scoped to TREE, SET self-reference, all submeters, restart and rollback', {
     skip: !process.env.HOMEBRIDGE_TEST_ROOT,
 }, async () => {
     const root = process.env.HOMEBRIDGE_TEST_ROOT;
@@ -39,7 +39,7 @@ test('real Homebridge/Matter: NODE, SET self-reference, all submeters, restart a
             try {
                 let caseId = 0;
                 for (const [address, name, enabled, expected, selectedTopology] of [
-                    ['51', 'Consumo Generale', true, 'nodeTopology', 'node'],
+                    ['51', 'Consumo Generale', true, 'treeTopology', 'node'],
                     ['54', 'Consumo Lavatrice', true, 'setTopology', 'set'],
                     ['55', 'Consumo Frigorifero', true, 'setTopology', 'set'],
                     ['52', 'Consumo Condizionatore', true, 'setTopology', 'set'],
@@ -50,7 +50,7 @@ test('real Homebridge/Matter: NODE, SET self-reference, all submeters, restart a
                     ['510', 'Consumo Lavastoviglie', true, 'setTopology', 'set'],
                     ['51', 'Disabled main', false, 'treeTopology', 'node'],
                     ['54', 'Disabled submeter', false, 'treeTopology', 'set'],
-                    ['999', 'Arbitrary main', true, 'nodeTopology', 'node'],
+                    ['999', 'Arbitrary main', true, 'treeTopology', 'node'],
                     ['51', 'Explicit submeter at 51', true, 'setTopology', 'set'],
                     ['1000', 'Explicit tree', true, 'treeTopology', 'tree'],
                     ['51', 'Unconfigured at 51', true, 'treeTopology', undefined],
