@@ -142,7 +142,7 @@
               "title": "Tipo dispositivo Matter",
               "type": "string",
               "default": "outlet",
-              "description": "Solo misuratori WHO=18. La presa \u00e8 una rappresentazione compatibile: non comanda il circuito. Il contatore nativo richiede una versione Homebridge che esponga ElectricalMeter (verificato beta.17+). Cambiare tipo pu\u00f2 cambiare la visualizzazione in Casa; non implica somma o esclusione dal totale.",
+              "description": "Solo misuratori WHO=18. La presa \u00e8 una rappresentazione compatibile: non comanda il circuito. Il contatore nativo richiede una versione Homebridge che esponga ElectricalMeter (verificato beta.17+). Cambiare tipo pu\u00f2 cambiare la visualizzazione in Casa; non implica somma o esclusione dal totale. electricalSensor espone soltanto potenza ed energia. Casa pu\u00f2 mostrarlo diversamente e non garantisce watt sulla tessera n\u00e9 deduplicazione.",
               "oneOf": [
                 {
                   "title": "Presa virtuale con letture (compatibilit\u00e0 Casa)",
@@ -154,6 +154,12 @@
                   "title": "Contatore nativo ElectricalMeter",
                   "enum": [
                     "electricalMeter"
+                  ]
+                },
+                {
+                  "title": "Sensore di consumo \u2014 pinza senza ON/OFF",
+                  "enum": [
+                    "electricalSensor"
                   ]
                 }
               ]

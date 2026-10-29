@@ -25,13 +25,13 @@ test('migration from legacy SET to standard TREE: nine meters, identity, live up
     environment.set(Filesystem, new NodeJsFilesystem(directory));
     const diagnostics = [];
     function accessory(i, enabled) {
-        const a = { UUID: `meter-${i}`, displayName: `Meter ${i}`, deviceType: i ? deviceTypes.OnOffOutlet : deviceTypes.ElectricalMeter,
+        const a = { UUID: `meter-${i}`, displayName: `Meter ${i}`, deviceType: i === 8 && !enabled ? deviceTypes.ElectricalSensor : i ? deviceTypes.OnOffOutlet : deviceTypes.ElectricalMeter,
             serialNumber: `meter-${i}`, manufacturer: 'Test', model: 'Meter', context: {},
             _associatedPlugin: 'homebridge-myhome-eve', _associatedPlatform: 'LegrandMyHome',
             clusters: { onOff: { onOff: true }, electricalPowerMeasurement: { activePower: 123000 },
                 electricalEnergyMeasurement: { cumulativeEnergyImported: { energy: 4560000 } } },
             handlers: { onOff: { on: async () => {}, off: async () => {} } } };
-        if (!i) { delete a.clusters.onOff; delete a.handlers.onOff; }
+        if (!i || (i === 8 && !enabled)) { delete a.clusters.onOff; delete a.handlers.onOff; }
         return applyPowerTopologyExperiment(a, {
             address: `${51 + i}`, name: a.displayName, api: { matter: { deviceRequirements } },
             config: { matterPowerTopology: i ? 'set' : 'node', parent: { config: { matterPowerTopologyExperiment: enabled } } },

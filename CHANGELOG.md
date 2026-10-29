@@ -1,3 +1,8 @@
+# 1.2.1
+
+- Aggiunge ElectricalSensor per misuratori di soli consumi, senza ON/OFF, selezionabile per dispositivo nel frontend.
+- Mantiene identità e impostazioni degli altri misuratori.
+
 # 1.2.0
 
 - Rimuove la personalizzazione PowerTopology e i controlli NODE/SET/TREE dal plugin; usa la composizione standard Homebridge.

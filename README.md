@@ -9,6 +9,7 @@ Ogni `MHPowerMeter` usa un indirizzo OpenWebNet univoco. Il polling legge potenz
 `matterDeviceType` seleziona esclusivamente la rappresentazione Matter:
 
 - `outlet` (predefinito): presa virtuale con letture, per compatibilità con le tessere Casa. Non comanda il circuito e i comandi ON/OFF sono fittizi.
+- `electricalSensor`: sensore di potenza ed energia senza comandi ON/OFF, adatto alle pinze degli elettrodomestici. La presentazione in Casa va verificata; non dichiara subordinazione al generale.
 - `electricalMeter`: contatore nativo senza ON/OFF. Richiede l'API ElectricalMeter di Homebridge, verificata dalla 2.4.1-beta.17. Cambiare tipo può modificare la presentazione in Casa e lasciare temporaneamente vecchie tessere.
 
 `matterDiagnostics: true` registra le letture inviate a Matter. Non registra password.

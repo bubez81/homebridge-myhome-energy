@@ -18,3 +18,10 @@ test('native meter initializes with actual Homebridge measurement defaults', {sk
  const {mkdtemp,rm}=require('node:fs/promises');const {tmpdir}=require('node:os');const {NodeJsFilesystem}=await load('node_modules/@matter/nodejs/dist/esm/index.js');const storage=await mkdtemp(join(tmpdir(),'native-meter-'));const env=new Environment('native-meter',Environment.default);env.set(Filesystem,new NodeJsFilesystem(storage));const node=await ServerNode.create({id:'native-meter',environment:env});
  const ep=new Endpoint(a.deviceType,{id:'native-meter-test',...a.clusters});await node.add(ep);try{assert.equal(ep.state.electricalPowerMeasurement.activePower,123000);assert.equal(ep.state.electricalEnergyMeasurement.cumulativeEnergyImported.energy,456000);}finally{await node.close();await rm(storage,{recursive:true,force:true});}
 });
+
+test('electrical sensor keeps identity and removes only switch behavior',()=>{
+ const type={};const a={UUID:'same',serialNumber:'serial',clusters:{onOff:{onOff:true},electricalPowerMeasurement:{activePower:4000}},handlers:{onOff:{}},getState:()=>4000};
+ apply(a,{config:{matterDeviceType:'electricalSensor'},api:{matter:{deviceTypes:{ElectricalSensor:type}}}});
+ assert.equal(a.deviceType,type);assert.equal(a.UUID,'same');assert.equal(a.serialNumber,'serial');assert.equal(a.clusters.onOff,undefined);assert.equal(a.handlers.onOff,undefined);assert.equal(a.getState('electricalPowerMeasurement','activePower'),4000);assert.equal(a.getState('onOff','onOff'),undefined);
+ const {normalizeMatterConfig}=require('../lib/matter-config');assert.equal(normalizeMatterConfig({devices:[{accessory:'MHPowerMeter',matterDeviceType:'electricalSensor'}]}).devices[0].matterDeviceType,'electricalSensor');
+});
