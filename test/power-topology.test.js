@@ -4,9 +4,9 @@ const { mkdtemp, rm } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 const { pathToFileURL } = require('node:url');
-const { applyPowerTopologyExperiment } = require('../lib/power-topology-experiment');
+const { applyPowerTopologyExperiment } = require('./fixtures/legacy-topology');
 
-test('real Homebridge/Matter: legacy NODE scoped to TREE, SET self-reference, all submeters, restart and rollback', {
+test('historical fixture: legacy SET versus Homebridge default TREE', {
     skip: !process.env.HOMEBRIDGE_TEST_ROOT,
 }, async () => {
     const root = process.env.HOMEBRIDGE_TEST_ROOT;

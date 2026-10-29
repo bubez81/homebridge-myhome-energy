@@ -1,7 +1,7 @@
 {
   "pluginAlias": "LegrandMyHome",
   "pluginType": "platform",
-  "headerDisplay": "Plugin Homebridge per BTicino MyHome OpenWebNet (WHO=18) con compatibilità Eve per potenza istantanea e consumo totale.",
+  "headerDisplay": "Plugin Homebridge per BTicino MyHome OpenWebNet (WHO=18) con compatibilit\u00e0 Eve per potenza istantanea e consumo totale.",
   "footerDisplay": "Per i tipi di accessorio supportati e il significato dell'indirizzo, consulta il README del plugin.",
   "schema": {
     "type": "object",
@@ -28,18 +28,6 @@
         "type": "boolean",
         "default": false
       },
-      "matterPowerTopologyExperiment": {
-        "title": "Abilita topologie Matter configurate",
-        "type": "boolean",
-        "default": false,
-        "description": "Applica la topologia scelta per ciascun misuratore. Se disattivato usa il comportamento standard Homebridge. Richiede riavvio del child bridge; non garantisce la deduplicazione in Casa."
-      },
-      "matterPowerTopologyDiagnostics": {
-        "title": "Log confronto Energia Matter",
-        "type": "boolean",
-        "default": false,
-        "description": "Registra i watt inviati dai misuratori MyHome per confrontare prima/dopo."
-      },
       "devices": {
         "title": "Dispositivi",
         "type": "array",
@@ -51,17 +39,72 @@
               "type": "string",
               "required": true,
               "oneOf": [
-                { "title": "Relay (luce/relè ON-OFF)", "enum": ["MHRelay"] },
-                { "title": "Presa (Outlet)", "enum": ["MHOutlet"] },
-                { "title": "Relay luce", "enum": ["MHRelayLight"] },
-                { "title": "Dimmer", "enum": ["MHDimmer"] },
-                { "title": "Tenda semplice (F411)", "enum": ["MHBlind"] },
-                { "title": "Tenda avanzata (F401)", "enum": ["MHBlindAdvanced"] },
-                { "title": "Termostato (F430)", "enum": ["MHThermostat"] },
-                { "title": "Termometro esterno", "enum": ["MHExternalThermometer"] },
-                { "title": "Sensore contatto (F428)", "enum": ["MHContactSensor"] },
-                { "title": "Misuratore potenza/consumo (WHO=18)", "enum": ["MHPowerMeter"] },
-                { "title": "Scenario", "enum": ["MHScene"] }
+                {
+                  "title": "Relay (luce/rel\u00e8 ON-OFF)",
+                  "enum": [
+                    "MHRelay"
+                  ]
+                },
+                {
+                  "title": "Presa (Outlet)",
+                  "enum": [
+                    "MHOutlet"
+                  ]
+                },
+                {
+                  "title": "Relay luce",
+                  "enum": [
+                    "MHRelayLight"
+                  ]
+                },
+                {
+                  "title": "Dimmer",
+                  "enum": [
+                    "MHDimmer"
+                  ]
+                },
+                {
+                  "title": "Tenda semplice (F411)",
+                  "enum": [
+                    "MHBlind"
+                  ]
+                },
+                {
+                  "title": "Tenda avanzata (F401)",
+                  "enum": [
+                    "MHBlindAdvanced"
+                  ]
+                },
+                {
+                  "title": "Termostato (F430)",
+                  "enum": [
+                    "MHThermostat"
+                  ]
+                },
+                {
+                  "title": "Termometro esterno",
+                  "enum": [
+                    "MHExternalThermometer"
+                  ]
+                },
+                {
+                  "title": "Sensore contatto (F428)",
+                  "enum": [
+                    "MHContactSensor"
+                  ]
+                },
+                {
+                  "title": "Misuratore potenza/consumo (WHO=18)",
+                  "enum": [
+                    "MHPowerMeter"
+                  ]
+                },
+                {
+                  "title": "Scenario",
+                  "enum": [
+                    "MHScene"
+                  ]
+                }
               ]
             },
             "name": {
@@ -74,18 +117,6 @@
               "type": "string",
               "required": true,
               "description": "Indirizzo OpenWebNet del dispositivo, es. 0/1/5 per luci/tende/prese, oppure numerico per termostati/sensori/power meter"
-            },
-            "matterPowerTopology": {
-              "title": "Topologia elettrica Matter",
-              "type": "string",
-              "default": "default",
-              "description": "Solo misuratori di potenza. Richiede Abilita topologie Matter configurate. SET riguarda solo questo misuratore; La precedente opzione NODE viene pubblicata come TREE dalla versione 1.1.18.",
-              "oneOf": [
-                { "title": "Predefinita Homebridge", "enum": ["default"] },
-                { "title": "Generale — TREE (compatibilità con configurazione NODE)", "enum": ["node"] },
-                { "title": "SET — Solo questo misuratore", "enum": ["set"] },
-                { "title": "TREE — Questo misuratore e i suoi endpoint figli", "enum": ["tree"] }
-              ]
             },
             "scene": {
               "title": "Numero scenario",
@@ -106,9 +137,35 @@
               "title": "Modello (mostrato nell'app Home)",
               "type": "string",
               "description": "Solo per misuratori di potenza"
+            },
+            "matterDeviceType": {
+              "title": "Tipo dispositivo Matter",
+              "type": "string",
+              "default": "outlet",
+              "description": "Solo misuratori WHO=18. La presa \u00e8 una rappresentazione compatibile: non comanda il circuito. Il contatore nativo richiede una versione Homebridge che esponga ElectricalMeter (verificato beta.17+). Cambiare tipo pu\u00f2 cambiare la visualizzazione in Casa; non implica somma o esclusione dal totale.",
+              "oneOf": [
+                {
+                  "title": "Presa virtuale con letture (compatibilit\u00e0 Casa)",
+                  "enum": [
+                    "outlet"
+                  ]
+                },
+                {
+                  "title": "Contatore nativo ElectricalMeter",
+                  "enum": [
+                    "electricalMeter"
+                  ]
+                }
+              ]
             }
           }
         }
+      },
+      "matterDiagnostics": {
+        "title": "Diagnostica letture Matter",
+        "type": "boolean",
+        "default": false,
+        "description": "Registra i watt inviati dai misuratori MyHome per confrontare prima/dopo."
       }
     }
   }

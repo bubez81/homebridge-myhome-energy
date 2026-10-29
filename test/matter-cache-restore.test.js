@@ -5,10 +5,10 @@ const { mkdtemp, readFile, writeFile, rm } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const { join, resolve } = require('node:path');
 const { pathToFileURL } = require('node:url');
-const { applyPowerTopologyExperiment } = require('../lib/power-topology-experiment');
+const { applyPowerTopologyExperiment } = require('./fixtures/legacy-topology');
 const { migrateCache } = require('../scripts/repair-power-topology-cache');
 
-test('unmodified Homebridge: real cache restore, nine meters, three restarts and topology rollback', {
+test('migration from legacy SET to standard TREE: nine meters, identity, live updates and restarts', {
     skip: !process.env.HOMEBRIDGE_TEST_ROOT,
 }, async () => {
     const root = resolve(process.env.HOMEBRIDGE_TEST_ROOT);
@@ -25,12 +25,13 @@ test('unmodified Homebridge: real cache restore, nine meters, three restarts and
     environment.set(Filesystem, new NodeJsFilesystem(directory));
     const diagnostics = [];
     function accessory(i, enabled) {
-        const a = { UUID: `meter-${i}`, displayName: `Meter ${i}`, deviceType: deviceTypes.OnOffOutlet,
+        const a = { UUID: `meter-${i}`, displayName: `Meter ${i}`, deviceType: i ? deviceTypes.OnOffOutlet : deviceTypes.ElectricalMeter,
             serialNumber: `meter-${i}`, manufacturer: 'Test', model: 'Meter', context: {},
             _associatedPlugin: 'homebridge-myhome-eve', _associatedPlatform: 'LegrandMyHome',
             clusters: { onOff: { onOff: true }, electricalPowerMeasurement: { activePower: 123000 },
                 electricalEnergyMeasurement: { cumulativeEnergyImported: { energy: 4560000 } } },
             handlers: { onOff: { on: async () => {}, off: async () => {} } } };
+        if (!i) { delete a.clusters.onOff; delete a.handlers.onOff; }
         return applyPowerTopologyExperiment(a, {
             address: `${51 + i}`, name: a.displayName, api: { matter: { deviceRequirements } },
             config: { matterPowerTopology: i ? 'set' : 'node', parent: { config: { matterPowerTopologyExperiment: enabled } } },
@@ -38,21 +39,10 @@ test('unmodified Homebridge: real cache restore, nine meters, three restarts and
         });
     }
     let numbers;
+    let identities;
     try {
         // Both changing topology back to defaults and re-enabling it are covered.
-        for (const [cycle, enabled] of [true, true, true, true, false, true].entries()) {
-            if (cycle === 1) {
-                // Reproduce the released 1.1.16 cache; migrate while the bridge is stopped.
-                const file = join(directory, 'cache/accessories.json');
-                const legacy = JSON.parse(await readFile(file, 'utf8'));
-                legacy.forEach((a, i) => {
-                    a.context.type = 'MHPowerMeter';
-                    if (i) a.clusters.powerTopology = { availableEndpoints: [] };
-                });
-                const migrated = migrateCache(legacy);
-                assert.equal(migrated.changed.length, 8);
-                await writeFile(file, JSON.stringify(migrated.entries));
-            }
+        for (const [cycle, enabled] of [true, false, false, false].entries()) {
             const node = await ServerNode.create({ id: 'bridge', environment });
             const cache = new MatterAccessoryCache(directory, 'cache');
             try {
@@ -71,6 +61,9 @@ test('unmodified Homebridge: real cache restore, nine meters, three restarts and
                 const currentNumbers = entries.map(a => a.endpoint.number);
                 if (numbers) assert.deepEqual(currentNumbers, numbers, 'endpoint numbers must not drift');
                 numbers = currentNumbers;
+                const currentIdentities = entries.map(a => a.endpoint.state.bridgedDeviceBasicInformation.uniqueId);
+                if (identities) assert.deepEqual(currentIdentities, identities, 'Matter uniqueIds must survive migration');
+                identities = currentIdentities;
                 for (const [i, a] of entries.entries()) {
                     const s = a.endpoint.state;
                     assert.equal(s.powerTopology.featureMap[enabled ? i ? 'setTopology' : 'treeTopology' : 'treeTopology'], true);
@@ -78,12 +71,17 @@ test('unmodified Homebridge: real cache restore, nine meters, three restarts and
                     assert.equal(Number(s.electricalPowerMeasurement.activePower), 123000);
                     assert.equal(Number(s.electricalEnergyMeasurement.cumulativeEnergyImported.energy), 4560000);
                 }
+                for (const a of entries) {
+                    await server.updateAccessoryState(a.UUID, 'electricalPowerMeasurement', { activePower: 987000 });
+                    assert.equal(a.endpoint.state.electricalPowerMeasurement.activePower, 987000);
+                    await server.updateAccessoryState(a.UUID, 'electricalPowerMeasurement', { activePower: 123000 });
+                }
                 await cache.save(server.accessories);
                 const saved = JSON.parse(await readFile(join(directory, 'cache/accessories.json'), 'utf8'));
                 assert.equal(saved.length, 9);
                 for (const a of saved) assert.equal(a.clusters.powerTopology, undefined);
             } finally { cache.cancelPendingSave(); await node.close(); }
         }
-        assert.equal(diagnostics.length, 45);
+        assert.equal(diagnostics.length, 9);
     } finally { await environment.close(); await rm(directory, { recursive: true, force: true }); }
 });

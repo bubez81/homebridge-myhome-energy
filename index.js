@@ -1,4 +1,7 @@
-const { applyPowerTopologyExperiment } = require("./lib/power-topology-experiment");
+const { normalizeMatterConfig } = require('./lib/matter-config');
+const applyMeterType = require('./lib/matter-device-type');
+const enqueueMatterUpdate = require('./lib/matter-update-queue');
+const { applyPowerTopology } = require("./lib/matter-topology");
 var path = require("path");	
 var mh = require(path.join(__dirname,'/lib/mhclient'));
 var sprintf = require("sprintf-js").sprintf, inherits = require("util").inherits, Promise = require('promise');
@@ -94,6 +97,7 @@ module.exports = function (homebridge) {
 
 class LegrandMyHome {
 	constructor(log, config, api) {
+        config = normalizeMatterConfig(config || {});
 		this.log = log;
 		this.config = config || {};
 		this.api = api;
@@ -157,7 +161,7 @@ class LegrandMyHome {
 						Promise.resolve(this.api.matter.registerPlatformAccessories("homebridge-myhome-eve", "LegrandMyHome", matterAccessories))
 							.then(function() {
 								this.powerMeterAccessories.forEach(function(meter) { meter.matterRegistered = true; });
-								this.log.info("LegrandMyHome: " + matterAccessories.length + " power meter pubblicati come Matter OnOffOutlet Energy Meter");
+								this.log.info("LegrandMyHome: " + matterAccessories.length + " misuratori pubblicati via Matter (tipo configurato per dispositivo)");
 							}.bind(this))
 							.catch(function(e) {
 								this.log.error("LegrandMyHome: errore registrazione Matter power meter: " + (e && e.stack ? e.stack : e));
@@ -751,21 +755,21 @@ class MHPowerMeter {
 	                                return undefined;
 	                        }.bind(this)
 	                };
-	                return applyPowerTopologyExperiment(accessory, this);
+	                return applyMeterType(accessory, this);
 	        }
 
 	        updateMatterPower() {
 	                if (!this.api || !this.api.matter || !this.matterRegistered) return;
 	                const watts = this.value || 0;
-	                this.api.matter.updateAccessoryState(
+	                enqueueMatterUpdate(this, () => this.api.matter.updateAccessoryState(
 	                        this.matterUUID,
 	                        'electricalPowerMeasurement',
 	                        { activePower: Math.round(watts * 1000) }
-						).then(function() {
-                            if (this.config.parent.config.matterPowerTopologyDiagnostics === true) {
-                                this.log.info('[PowerTopology reading] ' + JSON.stringify({
+						)).then(function() {
+                            if (this.config.parent.config.matterDiagnostics === true) {
+                                this.log.info('[Matter reading] ' + JSON.stringify({
                                     name: this.name, address: String(this.address), watts,
-                                    experiment: this.config.parent.config.matterPowerTopologyExperiment === true,
+                                    deviceType: this.config.matterDeviceType,
                                     timestamp: new Date().toISOString()
                                 }));
                             }
@@ -776,7 +780,7 @@ class MHPowerMeter {
 
 	        updateMatterEnergy() {
 	                if (!this.api || !this.api.matter || !this.matterRegistered) return;
-	                this.api.matter.updateAccessoryState(
+	                enqueueMatterUpdate(this, () => this.api.matter.updateAccessoryState(
 	                        this.matterUUID,
 	                        'electricalEnergyMeasurement',
 	                        {
@@ -785,7 +789,7 @@ class MHPowerMeter {
 	                                        endTimestamp: Math.round(Date.now() / 1000)
 	                                }
 	                        }
-						).catch(function(e) {
+						)).catch(function(e) {
 	                        this.log.error("Matter energy update failed " + this.address + ": " + e);
 	                }.bind(this));
 	        }

@@ -1,3 +1,9 @@
+# 1.2.0
+
+- Rimuove la personalizzazione PowerTopology e i controlli NODE/SET/TREE dal plugin; usa la composizione standard Homebridge.
+- Normalizza le opzioni precedenti, mantiene tipi e identità, aggiorna frontend e documentazione.
+- Verifica migrazione SET→TREE, cache, letture e identità dopo riavvii.
+
 # 1.1.18
 
 - Pubblica la selezione legacy NODE come TREE per limitare il generale al proprio endpoint. Mantiene i sottomisuratori SET e la correzione cache 1.1.17.
