@@ -1,7 +1,6 @@
 const { normalizeMatterConfig } = require('./lib/matter-config');
 const applyMeterType = require('./lib/matter-device-type');
 const enqueueMatterUpdate = require('./lib/matter-update-queue');
-const { applyPowerTopology } = require("./lib/matter-topology");
 var path = require("path");	
 var mh = require(path.join(__dirname,'/lib/mhclient'));
 var sprintf = require("sprintf-js").sprintf, inherits = require("util").inherits, Promise = require('promise');
