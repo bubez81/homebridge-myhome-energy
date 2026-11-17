@@ -1,3 +1,10 @@
+# 1.3.0 — MyHome Energy
+
+- Rinomina pacchetto e progetto in MyHome Energy.
+- Conserva piattaforma LegrandMyHome, UUID e tipi Matter per la migrazione della cache.
+- Richiede Homebridge 2.5.0 o successivo.
+- Nessun cambiamento alle letture o alla topologia dei misuratori.
+
 # 1.2.1
 
 - Aggiunge ElectricalSensor per misuratori di soli consumi, senza ON/OFF, selezionabile per dispositivo nel frontend.

@@ -1,6 +1,6 @@
-# Homebridge MyHome Eve
+# MyHome Energy
 
-Misuratori BTicino MyHome OpenWebNet WHO=18, con letture HAP per Eve e letture standard Matter. Il plugin supporta inoltre i dispositivi MyHome elencati nella schermata di configurazione.
+Misuratori BTicino MyHome OpenWebNet WHO=18, con letture standard di potenza ed energia tramite Matter. Il plugin supporta inoltre i dispositivi MyHome elencati nella schermata di configurazione.
 
 ## Configurazione dei misuratori
 
@@ -31,3 +31,11 @@ Non cancellare i dati di pairing o la cache per questa migrazione. Lo script `sc
 ## Verifica
 
 `npm test` esegue i test locali. Impostando `HOMEBRIDGE_TEST_ROOT` al percorso del pacchetto Homebridge installato si includono prove isolate con Matter reale, senza usare storage e abbinamenti di produzione.
+
+## Rinomina 1.3.0
+
+Il pacchetto e il repository si chiamano `homebridge-myhome-energy` (prima `homebridge-myhome-eve`). Installare un solo pacchetto: non tenere contemporaneamente entrambe le versioni. La piattaforma nella configurazione resta `LegrandMyHome`, perché permette a Homebridge 2.5.0 di riconoscere la precedente associazione della cache. UUID, seriali, tipi Matter e identità del child bridge restano invariati. Non cancellare cache o pairing e non ricreare il bridge.
+
+Se presenti, aggiornare il vecchio nome nelle liste `plugins` e `disabledPlugins` e nel selettore `plugin` della piattaforma. Conservare `_bridge.username` e le impostazioni Matter. Il nome visualizzato del child bridge può diventare `MyHome Energy`.
+
+Il vecchio supporto HAP è conservato per compatibilità e non viene attivato dalla rinomina. Non è una promessa di supporto ai misuratori Matter puri nell’app Eve.

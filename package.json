@@ -1,8 +1,8 @@
 {
-  "name": "homebridge-myhome-eve",
-  "version": "1.2.1",
-  "displayName": "MyHome Eve Power Meter",
-  "description": "Plugin Homebridge per BTicino MyHome OpenWebNet (WHO=18, moduli F520 e F523) con misuratori HAP compatibili con Eve e pubblicazione Matter dei dati standard di potenza ed energia.",
+  "name": "homebridge-myhome-energy",
+  "version": "1.3.0",
+  "displayName": "MyHome Energy",
+  "description": "Misuratori di potenza ed energia BTicino MyHome OpenWebNet per Homebridge e Matter.",
   "license": "MIT",
   "author": {
     "name": "Michele Galanti",
@@ -10,12 +10,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bubez81/homebridge-myhome-eve.git"
+    "url": "git+https://github.com/bubez81/homebridge-myhome-energy.git"
   },
   "bugs": {
-    "url": "https://github.com/bubez81/homebridge-myhome-eve/issues"
+    "url": "https://github.com/bubez81/homebridge-myhome-energy/issues"
   },
-  "homepage": "https://github.com/bubez81/homebridge-myhome-eve#readme",
+  "homepage": "https://github.com/bubez81/homebridge-myhome-energy#readme",
   "keywords": [
     "homebridge-plugin",
     "homebridge",
@@ -28,14 +28,13 @@
     "energy",
     "power",
     "consumo",
-    "eve",
     "perlhof",
     "supports-hap",
     "supports-matter"
   ],
   "engines": {
     "node": ">=18.0.0",
-    "homebridge": ">=2.4.0"
+    "homebridge": ">=2.5.0 <3.0.0"
   },
   "enginesStrict": true,
   "main": "index.js",

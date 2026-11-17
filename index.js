@@ -90,7 +90,7 @@ module.exports = function (homebridge) {
 	}
 
 	process.setMaxListeners(0);
-	homebridge.registerPlatform("homebridge-myhome-eve", "LegrandMyHome", LegrandMyHome);
+	homebridge.registerPlatform("homebridge-myhome-energy", "LegrandMyHome", LegrandMyHome);
 
 };
 
@@ -149,7 +149,7 @@ class LegrandMyHome {
 					});
 					return platformAccessory;
 				});
-				this.api.publishExternalAccessories("homebridge-myhome-eve", externalAccessories);
+				this.api.publishExternalAccessories("homebridge-myhome-energy", externalAccessories);
 				this.log.info("LegrandMyHome: " + externalAccessories.length + " power meter pubblicati come external accessory");
 
 					// Homebridge 2.x Matter: pubblica gli stessi power meter come OnOffOutlet con misurazione energia
@@ -157,7 +157,7 @@ class LegrandMyHome {
 						var matterAccessories = this.powerMeterAccessories.map(function(meter) {
 							return meter.toMatterAccessory();
 						});
-						Promise.resolve(this.api.matter.registerPlatformAccessories("homebridge-myhome-eve", "LegrandMyHome", matterAccessories))
+						Promise.resolve(this.api.matter.registerPlatformAccessories("homebridge-myhome-energy", "LegrandMyHome", matterAccessories))
 							.then(function() {
 								this.powerMeterAccessories.forEach(function(meter) { meter.matterRegistered = true; });
 								this.log.info("LegrandMyHome: " + matterAccessories.length + " misuratori pubblicati via Matter (tipo configurato per dispositivo)");

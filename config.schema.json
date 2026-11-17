@@ -1,7 +1,7 @@
 {
   "pluginAlias": "LegrandMyHome",
   "pluginType": "platform",
-  "headerDisplay": "Plugin Homebridge per BTicino MyHome OpenWebNet (WHO=18) con compatibilit\u00e0 Eve per potenza istantanea e consumo totale.",
+  "headerDisplay": "MyHome Energy: misuratori BTicino MyHome OpenWebNet (WHO=18) con potenza ed energia tramite Matter.",
   "footerDisplay": "Per i tipi di accessorio supportati e il significato dell'indirizzo, consulta il README del plugin.",
   "schema": {
     "type": "object",
@@ -40,7 +40,7 @@
               "required": true,
               "oneOf": [
                 {
-                  "title": "Relay (luce/rel\u00e8 ON-OFF)",
+                  "title": "Relay (luce/relè ON-OFF)",
                   "enum": [
                     "MHRelay"
                   ]
@@ -142,10 +142,10 @@
               "title": "Tipo dispositivo Matter",
               "type": "string",
               "default": "outlet",
-              "description": "Solo misuratori WHO=18. La presa \u00e8 una rappresentazione compatibile: non comanda il circuito. Il contatore nativo richiede una versione Homebridge che esponga ElectricalMeter (verificato beta.17+). Cambiare tipo pu\u00f2 cambiare la visualizzazione in Casa; non implica somma o esclusione dal totale. electricalSensor espone soltanto potenza ed energia. Casa pu\u00f2 mostrarlo diversamente e non garantisce watt sulla tessera n\u00e9 deduplicazione.",
+              "description": "Solo misuratori WHO=18. La presa è una rappresentazione compatibile: non comanda il circuito. Il contatore nativo richiede una versione Homebridge che esponga ElectricalMeter (verificato beta.17+). Cambiare tipo può cambiare la visualizzazione in Casa; non implica somma o esclusione dal totale. electricalSensor espone soltanto potenza ed energia. Casa può mostrarlo diversamente e non garantisce watt sulla tessera né deduplicazione.",
               "oneOf": [
                 {
-                  "title": "Presa virtuale con letture (compatibilit\u00e0 Casa)",
+                  "title": "Presa virtuale con letture (compatibilità Casa)",
                   "enum": [
                     "outlet"
                   ]
@@ -157,7 +157,7 @@
                   ]
                 },
                 {
-                  "title": "Sensore di consumo \u2014 pinza senza ON/OFF",
+                  "title": "Sensore di consumo — pinza senza ON/OFF",
                   "enum": [
                     "electricalSensor"
                   ]
