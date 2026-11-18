@@ -1,6 +1,7 @@
 const { normalizeMatterConfig } = require('./lib/matter-config');
 const applyMeterType = require('./lib/matter-device-type');
 const enqueueMatterUpdate = require('./lib/matter-update-queue');
+const hapMetersEnabled = api => api.isHapEnabled?.() !== false || api.isHapExternalsOnly?.() === true;
 var path = require("path");	
 var mh = require(path.join(__dirname,'/lib/mhclient'));
 var sprintf = require("sprintf-js").sprintf, inherits = require("util").inherits, Promise = require('promise');
@@ -27,6 +28,7 @@ module.exports = function (homebridge) {
 	 * that sandboxed context, which doesn't matter there.
 	 */
 	try {
+        if (hapMetersEnabled(homebridge)) {
 		FakeGatoHistoryService = require('fakegato-history')(homebridge);
 
 		/* Try to map Elgato's outlet custom vars */
@@ -85,6 +87,7 @@ module.exports = function (homebridge) {
 				this.addCharacteristic(LegrandMyHome.ResetTotal);
 			}
 		};
+        }
 	} catch (e) {
 		/* Sandboxed/mock homebridge.hap (e.g. alias extraction tooling): ignore and continue. */
 	}
@@ -133,6 +136,7 @@ class LegrandMyHome {
 		if (this.api && typeof this.api.on === 'function') {
 			this.api.on('didFinishLaunching', function() {
 				if (this.powerMeterAccessories.length === 0) return;
+                if (hapMetersEnabled(this.api)) {
 				var externalAccessories = this.powerMeterAccessories.map(function(meter) {
 					var platformAccessory = new Accessory(meter.name, meter.UUID);
 					meter.getServices().forEach(function(svc) {
@@ -151,6 +155,9 @@ class LegrandMyHome {
 				});
 				this.api.publishExternalAccessories("homebridge-myhome-energy", externalAccessories);
 				this.log.info("LegrandMyHome: " + externalAccessories.length + " power meter pubblicati come external accessory");
+                } else {
+                    this.log.info("MyHome Energy: misuratori solo Matter; servizi HAP e storico Eve disattivati");
+                }
 
 					// Homebridge 2.x Matter: pubblica gli stessi power meter come OnOffOutlet con misurazione energia
 					if (this.api && this.api.matter && this.api.matter.deviceTypes && this.api.matter.deviceTypes.OnOffOutlet) {

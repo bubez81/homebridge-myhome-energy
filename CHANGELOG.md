@@ -1,3 +1,11 @@
+# 1.3.1 — Misuratori Matter senza storico HAP inutilizzato
+
+- Quando HAP è disabilitato, non crea né pubblica i servizi HAP dei misuratori e non avvia il loro storico Eve/FakeGato.
+- Mantiene la compatibilità HAP quando esplicitamente abilitata, inclusa la modalità externals-only.
+- Conserva UUID, tipi e definizioni Matter; nessuna migrazione o cancellazione della cache.
+- Verificato con 15 test e ripristino dei nove misuratori su Homebridge 2.5.0.
+- Il ritorno degli accessori nella stanza predefinita di Apple Casa resta in indagine: questa versione non costituisce una soluzione accertata.
+
 # 1.3.0 — MyHome Energy
 
 - Rinomina pacchetto e progetto in MyHome Energy.
